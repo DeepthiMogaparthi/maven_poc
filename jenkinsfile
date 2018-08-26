@@ -1,0 +1,35 @@
+pipeline { 
+    agent any  
+    stages { 
+        stage('checkout') {
+            steps{
+                git 'https://github.com/DeepthiMogaparthi/maven_poc.git'
+            }
+        }
+        stage('Clean') { 
+            steps { 
+               echo 'clean stage...'
+               sh 'mvn clean'
+            }
+        }
+        stage('Build') { 
+            steps { 
+               echo 'build stage...' 
+               sh 'mvn compile'
+            }
+        }
+        stage('Package') { 
+            steps { 
+               echo 'package stage...' 
+               sh 'mvn package'
+            }
+        }
+        stage('Deploy to container') {
+            steps{
+                sshagent(['ed1af61c-6731-4268-bc28-d0b4c470387c']) {
+                    sh '-o StrictHostKeyChecking=no target/*.war ec2-user@172.31.18.91:/var/lib/tomcat8/webapps/'
+                }    
+            }
+        }
+    }
+}
