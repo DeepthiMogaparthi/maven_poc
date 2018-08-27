@@ -24,12 +24,5 @@ pipeline {
                sh 'mvn package'
             }
         }
-        stage('Deploy to container') {
-            steps{
-                sshagent(['ed1af61c-6731-4268-bc28-d0b4c470387c']) {
-                    sh '-o StrictHostKeyChecking=no target/*.war ec2-user@172.31.18.91:/var/lib/tomcat8/webapps/'
-                }    
-            }
-        }
     }
 }
